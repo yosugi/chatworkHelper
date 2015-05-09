@@ -62,5 +62,23 @@
         $(chatTextAreaSelector).val('[code]' + contents + '[/code]');
     });
 
+    // Add delete button on toolbar
+    var deleteButtonClassName = 'deleteTag';
+    var $deleteButton = $('<li style="display; inline-block;"><span>[消]</span></li>');
+    $deleteButton = addToolBarAttr($deleteButton, deleteButtonClassName, 'タグを削除します');
+    $(toolBarSelector).append($deleteButton);
+
+    // Delete tag
+    $('.' + deleteButtonClassName).click(function () {
+        var contents = $(chatTextAreaSelector).val();
+        var replaced = contents
+           .replace(/\[\/?info\]/g, '')
+           .replace(/\[\/?code\]/g, '')
+           .replace(/\[title\]/g, '')
+           .replace(/\[\/title\]/g, '\n');
+
+        $(chatTextAreaSelector).val(replaced);
+    });
+
 })(jQuery);
 
