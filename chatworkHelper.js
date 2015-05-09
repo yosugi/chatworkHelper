@@ -50,5 +50,17 @@
         $(chatTextAreaSelector).val('[info]' + newContents + '[/info]');
     });
 
+    // Add code button on toolbar
+    var codeButtonClassName = 'addCode';
+    var $codeButton = $('<li style="display; inline-block;"><span>[符]</span></li>');
+    $codeButton = addToolBarAttr($codeButton, codeButtonClassName, 'code タグで囲みます');
+    $(toolBarSelector).append($codeButton);
+
+    // Surround [code]...[/code]
+    $('.' + codeButtonClassName).click(function () {
+        var contents = $(chatTextAreaSelector).val();
+        $(chatTextAreaSelector).val('[code]' + contents + '[/code]');
+    });
+
 })(jQuery);
 
