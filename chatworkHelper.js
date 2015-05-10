@@ -2,6 +2,7 @@
 // @name        chatworkHelper
 // @namespace   http://github.com/yosugi/
 // @include     https://www.chatwork.com/*
+// @require     https://cdn.rawgit.com/yosugi/jquery.selection/master/src/jquery.selection.js
 // @grant none
 // ==/UserScript==
 
@@ -21,6 +22,25 @@
         return $li;
     };
 
+    function getContents() {
+        var selected = $(chatTextAreaSelector).selection();
+        if (selected) return selected;
+        return $(chatTextAreaSelector).val();
+    }
+
+    function setContents(contents) {
+        var selected = $(chatTextAreaSelector).selection();
+        if (!selected) {
+            // replace all string
+            $(chatTextAreaSelector).val(contents);
+            return;
+        }
+
+        // replace selected string
+        $(chatTextAreaSelector).selection('replace', { text: contents });
+        return;
+    }
+
     // Add info button on toolbar
     var infoButtonClassName = 'addInfo';
     var $infoButton = $('<li style="display; inline-block;"><span>[情]</span></li>');
@@ -29,8 +49,8 @@
 
     // Surround [info]...[/info]
     $('.' + infoButtonClassName).click(function () {
-        var contents = $(chatTextAreaSelector).val();
-        $(chatTextAreaSelector).val('[info]' + contents + '[/info]');
+        var contents = getContents();
+        setContents('[info]' + contents + '[/info]');
     });
 
     // Add title button on toolbar
@@ -41,13 +61,13 @@
 
     // Surround [info][title]...[/title]...[/info]
     $('.' + titleButtonClassName).click(function () {
-        var contents = $(chatTextAreaSelector).val();
+        var contents = getContents();
         var pos = contents.indexOf('\n');
         var title = contents.substring(0, pos);
         var remain = contents.substring(pos + 1);
         var newContents = '[title]' + title + '[/title]' + remain;
 
-        $(chatTextAreaSelector).val('[info]' + newContents + '[/info]');
+        setContents('[info]' + newContents + '[/info]');
     });
 
     // Add code button on toolbar
@@ -58,8 +78,8 @@
 
     // Surround [code]...[/code]
     $('.' + codeButtonClassName).click(function () {
-        var contents = $(chatTextAreaSelector).val();
-        $(chatTextAreaSelector).val('[code]' + contents + '[/code]');
+        var contents = getContents();
+        setContents('[code]' + contents + '[/code]');
     });
 
     // Add delete button on toolbar
@@ -70,14 +90,14 @@
 
     // Delete tag
     $('.' + deleteButtonClassName).click(function () {
-        var contents = $(chatTextAreaSelector).val();
+        var contents = getContents();
         var replaced = contents
            .replace(/\[\/?info\]/g, '')
            .replace(/\[\/?code\]/g, '')
            .replace(/\[title\]/g, '')
            .replace(/\[\/title\]/g, '\n');
 
-        $(chatTextAreaSelector).val(replaced);
+        setContents(replaced);
     });
 
 })(jQuery);
